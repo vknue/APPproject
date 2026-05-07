@@ -37,6 +37,7 @@ public class PhotosController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [TypeFilter(typeof(ExecutionTimeFilter))]
+    [ServiceFilter(typeof(AuditFilter))]
     public async Task<IActionResult> Upload(PhotoUploadViewModel model)
     {
         var user = await _userManager.GetUserAsync(User);
@@ -83,6 +84,7 @@ public class PhotosController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ServiceFilter(typeof(AuditFilter))]
     public async Task<IActionResult> Delete(int id)
     {
         var user = await _userManager.GetUserAsync(User);
@@ -106,6 +108,7 @@ public class PhotosController : Controller
 
     [HttpGet]
     [TypeFilter(typeof(ExecutionTimeFilter))]
+    [ServiceFilter(typeof(AuditFilter))]
     public async Task<IActionResult> Download(int id, List<string> filters)
     {
         var photo = await _context.Photos.FindAsync(id);
@@ -128,6 +131,7 @@ public class PhotosController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ServiceFilter(typeof(AuditFilter))]
     public async Task<IActionResult> Edit(int id, string description, string hashtags)
     {
         var photo = await _context.Photos.FindAsync(id);

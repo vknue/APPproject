@@ -61,6 +61,7 @@ builder.Services.AddAuthentication()
 
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 builder.Services.AddScoped<ExecutionTimeFilter>();
+builder.Services.AddScoped<AuditFilter>();
 
 var app = builder.Build();
 

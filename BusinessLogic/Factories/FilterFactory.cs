@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,13 +10,18 @@ namespace BusinessLogic.Factories
 {
     public static class FilterFactory
     {
-        public static IImageProcessingStrategy GetStrategy(string filter) => filter.ToLower() switch
+        private static readonly Dictionary<string, Type> _strategies = Assembly.GetExecutingAssembly()
+        .GetTypes()
+        .Where(t => typeof(IImageProcessingStrategy).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
+        .ToDictionary(t => t.Name.Replace("Strategy", "").ToLower(), t => t);
+
+        public static IImageProcessingStrategy? GetStrategy(string filter)
         {
-            "sepia" => new SepiaStrategy(),
-            "blur" => new BlurStrategy(),
-            "invert" => new InvertStrategy(),
-            "resize" => new ResizeStrategy(),
-            _ => null
-        };
+            if (_strategies.TryGetValue(filter.ToLower(), out var type))
+            {
+                return (IImageProcessingStrategy?)Activator.CreateInstance(type);
+            }
+            return null;
+        }
     }
 }
