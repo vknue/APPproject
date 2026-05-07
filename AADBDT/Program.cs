@@ -60,6 +60,7 @@ builder.Services.AddAuthentication()
     });
 
 builder.Services.AddScoped<IPhotoService, PhotoService>();
+builder.Services.AddScoped<ExecutionTimeFilter>();
 
 var app = builder.Build();
 

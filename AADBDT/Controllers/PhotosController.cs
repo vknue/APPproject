@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using AADBDT.Filters;
 using AADBDT.Models;
 using AADBDT.ViewModels;
-using BusinessLogic.Models;
 using BusinessLogic;
-using Infrastructure.Data;
 using BusinessLogic.Factories;
 using BusinessLogic.Helpers;
+using BusinessLogic.Models;
+using Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using SixLabors.ImageSharp;
 
 [Authorize]
@@ -35,6 +36,7 @@ public class PhotosController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [TypeFilter(typeof(ExecutionTimeFilter))]
     public async Task<IActionResult> Upload(PhotoUploadViewModel model)
     {
         var user = await _userManager.GetUserAsync(User);
@@ -103,6 +105,7 @@ public class PhotosController : Controller
     }
 
     [HttpGet]
+    [TypeFilter(typeof(ExecutionTimeFilter))]
     public async Task<IActionResult> Download(int id, List<string> filters)
     {
         var photo = await _context.Photos.FindAsync(id);
