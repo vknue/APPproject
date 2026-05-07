@@ -1,0 +1,76 @@
+﻿@model AADBDT.ViewModels.PhotoUploadViewModel
+
+@{
+    ViewData["Title"] = "Upload Photo";
+}
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <h2>Upload Photo</h2>
+            <p>Share your moment with hashtags</p>
+        </div>
+
+        <form asp-action="Upload" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="error-message show"></div>
+
+            <div class="form-group">
+                <div class="input-wrapper">
+                    <input asp-for="Description" placeholder="Description" required />
+                    <label asp-for="Description">Description</label>
+                    <div class="focus-border"></div>
+                </div>
+                <span asp-validation-for="Description" class="error-message show"></span>
+            </div>
+
+            <div class="form-group">
+                <div class="input-wrapper">
+                    <input asp-for="Hashtags" placeholder="Hashtags" required />
+                    <label asp-for="Hashtags">Hashtags (e.g. #nature, #summer)</label>
+                    <div class="focus-border"></div>
+                </div>
+                <span asp-validation-for="Hashtags" class="error-message show"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="checkbox-label mb-2" style="color: rgba(255, 255, 255, 0.7); font-size: 14px;">Select Image File</label>
+                <div class="input-wrapper">
+                    <input asp-for="ImageFile" type="file" accept="image/*" required style="padding: 12px; font-size: 14px;" />
+                    <div class="focus-border"></div>
+                </div>
+                <span asp-validation-for="ImageFile" class="error-message show"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Target Format</label>
+                <select asp-for="TargetFormat" class="form-control">
+                    <option value="jpg">JPG</option>
+                    <option value="png">PNG</option>
+                    <option value="bmp">BMP</option>
+                </select>
+            </div>
+
+            <div class="form-check">
+                <input asp-for="ResizeToSquare" class="form-check-input" type="checkbox">
+                <label class="form-check-label">Resize to 800x800</label>
+            </div>
+
+            <div class="d-flex flex-column gap-3 mt-4">
+                <button type="submit" class="btn login-btn">
+                    Upload to Feed
+                </button>
+
+                <a asp-controller="Home" asp-action="Index"
+                   style="text-align: center; color: rgba(255,255,255,0.6); text-decoration: none; font-size: 14px;">
+                    Cancel and Return
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

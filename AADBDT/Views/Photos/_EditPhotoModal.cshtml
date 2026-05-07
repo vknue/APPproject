@@ -1,0 +1,32 @@
+﻿<div id="editModal" class="photo-modal" onclick="closeEditModal()">
+    <div class="login-card" style="max-width: 450px; width: 95%;" onclick="event.stopPropagation()">
+        <div class="login-header">
+            <h3>Edit Photo Info</h3>
+        </div>
+
+        <form asp-controller="Photos" asp-action="Edit" method="post">
+            <input type="hidden" id="edit-id" name="Id" />
+
+            <div class="form-group">
+                <div class="input-wrapper">
+                    <input type="text" id="edit-description" name="Description" required placeholder="Description" />
+                    <label>Description</label>
+                    <div class="focus-border"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-wrapper">
+                    <input type="text" id="edit-hashtags" name="Hashtags" placeholder="Hashtags" />
+                    <label>Hashtags</label>
+                    <div class="focus-border"></div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn w-100">Save Changes</button>
+                <button type="button" onclick="closeEditModal()" class="btn w-100" style="background: rgba(255,255,255,0.05);">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>

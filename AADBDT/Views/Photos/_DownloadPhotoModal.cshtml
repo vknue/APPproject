@@ -1,0 +1,18 @@
+﻿<div id="downloadModal" class="photo-modal" onclick="closeDownloadModal(event)">
+    <div class="login-card" style="max-width: 450px; width: 95%;" onclick="event.stopPropagation()">
+        <div class="login-header">
+            <h3>Download Photo</h3>
+            <p>Select filters to apply</p>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-6"><label class="btn w-100 border-secondary"><input type="checkbox" name="f" value="sepia"> Sepia</label></div>
+            <div class="col-6"><label class="btn w-100 border-secondary"><input type="checkbox" name="f" value="blur"> Blur</label></div>
+            <div class="col-6"><label class="btn w-100 border-secondary"><input type="checkbox" name="f" value="invert"> Invert</label></div>
+            <div class="col-6"><label class="btn w-100 border-secondary"><input type="checkbox" name="f" value="resize"> Resize</label></div>
+        </div>
+
+        <input type="hidden" id="download-photo-id">
+        <button onclick="executeDownload()" class="btn w-100 mt-4">Download Selected</button>
+    </div>
+</div>

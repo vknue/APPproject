@@ -1,0 +1,64 @@
+﻿@model Tuple<BusinessLogic.Models.ApplicationUser, List<BusinessLogic.Models.AuditLog>>
+
+<div class="container" style="max-width: 1000px;">
+    <div class="row mb-4 g-3">
+        <div class="col-md-4">
+            <div class="login-card p-3 text-center h-100 d-flex flex-column justify-content-center">
+                <h3 style="color: #06b6d4;">@ViewBag.TotalActions</h3>
+                <small style="color: rgba(255,255,255,0.6);">Total Actions</small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="login-card p-3 text-center h-100 d-flex flex-column justify-content-center">
+                <h3 class="text-white">@ViewBag.LastActive</h3>
+                <small style="color: rgba(255,255,255,0.6);">Last Active</small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="login-card p-3 text-center h-100 d-flex flex-column justify-content-center">
+                <h3 class="text-warning">@ViewBag.MostFrequentAction</h3>
+                <small style="color: rgba(255,255,255,0.6);">Top Action</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="login-card">
+        <div class="login-header text-start mb-3 d-flex justify-content-between align-items-center">
+            <div>
+                <h2>@Model.Item1.Email</h2>
+                <p>Audit Trail & Activity Log</p>
+            </div>
+            <a asp-action="Users" class="social-btn text-decoration-none" style="width: auto; flex: initial;">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+        </div>
+
+        <div class="table-responsive scrollable-feed" style="max-height: 500px; overflow-y: auto;">
+            <table class="table" style="color: white; border-collapse: separate; border-spacing: 0;">
+                <thead style="position: sticky; top: 0; z-index: 10;">
+                    <tr style="background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(20px);">
+                        <th style="border-bottom: 2px solid rgba(255,255,255,0.2);">Time</th>
+                        <th style="border-bottom: 2px solid rgba(255,255,255,0.2);">Controller</th>
+                        <th style="border-bottom: 2px solid rgba(255,255,255,0.2);">Action</th>
+                        <th style="border-bottom: 2px solid rgba(255,255,255,0.2);">IP Address</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var log in Model.Item2)
+                    {
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="color: rgba(255,255,255,0.7);">@log.Timestamp.ToString("MMM dd, HH:mm:ss")</td>
+                            <td>@log.Controller</td>
+                            <td><span class="badge" style="background: rgba(255,255,255,0.1);">@log.Action</span></td>
+                            <td style="font-family: monospace;">@log.IpAddress</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            @if (!Model.Item2.Any())
+            {
+                <p class="text-center mt-5" style="color: rgba(255,255,255,0.5);">No activity recorded yet.</p>
+            }
+        </div>
+    </div>
+</div>

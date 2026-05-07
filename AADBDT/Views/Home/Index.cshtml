@@ -1,0 +1,66 @@
+﻿@model IEnumerable<BusinessLogic.Models.Photo>
+
+<partial name="~/Views/Photos/_EditPhotoModal.cshtml" />
+<partial name="~/Views/Photos/_DownloadPhotoModal.cshtml" />
+<partial name="~/Views/Photos/_ViewPhotoModal.cshtml" />
+<partial name="~/Views/Photos/_FilteringSearchBar.cshtml" />
+
+
+<div class="container mt-4">
+    <partial name="~/Views/Photos/_Pagination.cshtml" />
+
+    <div class="scrollable-feed" style="max-height: 85vh; overflow-y: auto; padding: 10px; display: flex; align-items: center; flex-direction: column;">
+        <div class="row mx-auto" style="width: 100%; max-width: 600px;">
+            @foreach (var photo in Model)
+            {
+                <div class="col-12 mb-4">
+                    <partial name="_PhotoCard" model="photo" />
+                </div>
+            }
+        </div>
+        <div style="min-height: 150px; width: 100%;"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function openModal(src) {
+            document.getElementById("photoModal").style.display = "flex";
+            document.getElementById("fullImage").src = src;
+        }
+
+        function closeModal() {
+            document.getElementById("photoModal").style.display = "none";
+        }
+
+        function openDownloadModal(id) {
+            document.getElementById("download-photo-id").value = id;
+            document.getElementById("downloadModal").style.display = "flex";
+        }
+
+        function executeDownload() {
+            const id = document.getElementById("download-photo-id").value;
+            const selected = Array.from(document.querySelectorAll('input[name="f"]:checked')).map(cb => cb.value);
+            let url = `/Photos/Download?id=${id}`;
+            selected.forEach(f => url += `&filters=${f}`);
+            window.location.href = url;
+            closeDownloadModal();
+            document.getElementById("downloadModal").style.display = "none";
+        }
+        function closeDownloadModal(event) {
+            if (event) event.stopPropagation();
+            document.getElementById("downloadModal").style.display = "none";
+        }
+
+        function openEditModal(id, description, hashtags) {
+            document.getElementById("editModal").style.display = "flex";
+            document.getElementById("edit-id").value = id;
+            document.getElementById("edit-description").value = description;
+            document.getElementById("edit-hashtags").value = hashtags;
+        }
+
+        function closeEditModal() {
+            document.getElementById("editModal").style.display = "none";
+        }
+    </script>
+}

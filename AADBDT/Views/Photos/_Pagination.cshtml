@@ -1,0 +1,10 @@
+﻿<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+        {
+            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { page = i, hashtag = ViewBag.Hashtag, author = ViewBag.Author })">@i</a>
+            </li>
+        }
+    </ul>
+</nav>
