@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +16,15 @@ namespace Infrastructure.Services
         public void RecordImageProcess(long elapsedMs)
         {
             TotalImagesProcessed++;
-            AverageProcessingTime = (AverageProcessingTime + elapsedMs) / 2;
+            //AverageProcessingTime = (AverageProcessingTime + elapsedMs) / 2;     LO5
+            AverageProcessingTime = CalculateNewAverage(AverageProcessingTime, elapsedMs);
         }
+
+        //PURE FUNCTIONS
+        public static double CalculateNewAverage(double currentAvg, long newTime)
+            => (currentAvg + newTime) / 2;
+
+        public int GetActiveSessions(Func<int, int, int> sessionCalculator)
+            => sessionCalculator(1, 10);
     }
 }
