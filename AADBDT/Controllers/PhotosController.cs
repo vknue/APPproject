@@ -48,7 +48,7 @@ public class PhotosController : Controller
         if (count >= limit)
         {
             TempData["Error"] = $"You have reached your daily limit of {limit} uploads for the {user.Package} package.";
-            return RedirectToAction("Index", "Home"); 
+            return RedirectToAction("Index", "Home");
         }
 
 
@@ -57,7 +57,7 @@ public class PhotosController : Controller
             return View(model);
         }
 
-        
+
 
         var filePath = await _photoService.SaveFileAsync(
         model.ImageFile,
@@ -118,11 +118,16 @@ public class PhotosController : Controller
 
         using var image = Image.Load(path);
 
-        foreach (var filterName in filters)
+        /*foreach (var filterName in filters)
         {
             var strategy = FilterFactory.GetStrategy(filterName);
             strategy?.Apply(image); 
-        }
+        }             // OUTCOME 5    */
+        filters
+            .Select(name => FilterFactory.GetStrategy(name))
+            .Where(strategy => strategy != null)
+            .ToList()
+            .ForEach(strategy => strategy!.Apply(image));
 
         using var ms = new MemoryStream();
         image.SaveAsJpeg(ms);
@@ -137,7 +142,7 @@ public class PhotosController : Controller
         var photo = await _context.Photos.FindAsync(id);
         var userId = _userManager.GetUserId(User);
 
-        if ((photo == null || photo.UserId != userId) &&  !(User.IsInRole("Admin"))) return Unauthorized();
+        if ((photo == null || photo.UserId != userId) && !(User.IsInRole("Admin"))) return Unauthorized();
 
         photo.Description = description;
         photo.Hashtags = hashtags;
