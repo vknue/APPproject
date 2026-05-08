@@ -9,6 +9,8 @@ using SixLabors.ImageSharp.Processing;
 public class PhotoService : IPhotoService
 {
     private readonly ApplicationDbContext _context;
+
+    //Lambda
     public PhotoService(ApplicationDbContext context) => _context = context;
 
     public async Task<string> SaveFileAsync(IFormFile file, string format, bool resize)
@@ -70,11 +72,13 @@ public class PhotoService : IPhotoService
         return (photos, totalPages);
     }
 
-    public async Task<int> GetTodayUploadCount(string userId)
+    /*public async Task<int> GetTodayUploadCount(string userId)
     {
         return await _context.Photos
             .CountAsync(p => p.UserId == userId && p.UploadDate.Date == DateTime.Today);
-    }
+    }*/
+    public async Task<int> GetTodayUploadCount(string userId) =>
+    await _context.Photos.CountAsync(p => p.UserId == userId && p.UploadDate.Date == DateTime.Today);
 
 
 }
