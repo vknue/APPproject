@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Infrastructure.Services;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Identity.Client;
 using System.Diagnostics;
 
 namespace AADBDT.Filters
@@ -6,6 +8,8 @@ namespace AADBDT.Filters
     public class ExecutionTimeFilter : IActionFilter
     {
         private Stopwatch _stopwatch;
+        private readonly ImageMetricsService _metrics;
+        public ExecutionTimeFilter(ImageMetricsService metrics) => _metrics = metrics;
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
@@ -17,6 +21,7 @@ namespace AADBDT.Filters
             _stopwatch.Stop();
             var elapsed = _stopwatch.ElapsedMilliseconds;
             Console.WriteLine($"Action {context.ActionDescriptor.DisplayName} took {elapsed}ms");
+            _metrics.RecordImageProcess(_stopwatch.ElapsedMilliseconds);
         }
     }
 }

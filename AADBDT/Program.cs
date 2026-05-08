@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,8 +17,10 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+
 //logging
 builder.Services.AddSingleton<IAuditService, AuditService>();
+
 builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add<AuditFilter>();
@@ -41,6 +45,24 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
     options.CheckConsentNeeded = context => true;
     options.MinimumSameSitePolicy = SameSiteMode.None;
 });
+
+//monitoring
+builder.Services.AddHealthChecks()
+    .AddCheck("Database_Connection", () =>
+    {
+        using (var scope = builder.Services.BuildServiceProvider().CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            return db.Database.CanConnect()
+                ? HealthCheckResult.Healthy("Database is reachable")
+                : HealthCheckResult.Unhealthy("Database is down");
+        }
+    })
+    .AddCheck("Memory_Limit", () =>
+        GC.GetTotalMemory(false) < 100 * 1024 * 1024
+            ? HealthCheckResult.Healthy()
+            : HealthCheckResult.Degraded());
+builder.Services.AddSingleton<ImageMetricsService>();
 
 //google and github login
 builder.Services.AddAuthentication()
@@ -108,6 +130,16 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+app.MapHealthChecks("/health");
+
+app.MapGet("/metrics", (ImageMetricsService metrics) => new {
+    Status = "Healthy",
+    Database = "Connected",
+    ProcessedImages = metrics.TotalImagesProcessed,
+    LatencyMs = Math.Round(metrics.AverageProcessingTime, 2),
+    RamUsage = $"{GC.GetTotalMemory(false) / 1024 / 1024}MB"
+});
 
 app.Run();
 
